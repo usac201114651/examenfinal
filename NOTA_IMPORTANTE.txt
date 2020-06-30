@@ -1,0 +1,19 @@
+********Importante*******
+
+
+ingeniero, en el repositorio se encuentra una carpeta llamada FinWindows, mantuvimos
+comunicación con Ottoniel, por la necesidad que tuvimos parcialmente de trabajar en Windows, y según nos decía, 
+que practicamente solo con los comandos de sistema y el audio nos daría problema al migrar a Linux. Sin embargo al migrar
+a linux no entendemos porque el código no era estable, por lo que lo modificamos pero no coseguios una versión estable, 
+cómo la de Windows. Entonces la incluímos por si representa algún valor. Muchas Gracias
+
+El trabajo se realizo en quipo completo, todos aportaron y colaboraron, el archivo "cliente" es el comentado, el otro es 
+una instancia de la clase "cliente"
+
+
+201114651-MARCO TULIO ESCOBAR ZAMORA 
+201700512-CARLOS ARMANDO TUBAC CARCUZ
+201701038-UBALDINO SERGIO ENRIQUE OROZCO BARILLAS
+
+
+

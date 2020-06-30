@@ -10,7 +10,7 @@ cómo la de Windows. Entonces la incluímos por si representa algún valor. Much
 El trabajo se realizo en quipo completo, todos aportaron y colaboraron, el archivo "cliente" es el comentado, el otro es 
 una instancia de la clase "cliente"
 
-Favor tomar el Final1.1, como valido
+Favor tomar el Final1.1, como valido, los comentarios del servidor estan en Final/servidor/
 
 201114651-MARCO TULIO ESCOBAR ZAMORA 
 201700512-CARLOS ARMANDO TUBAC CARCUZ

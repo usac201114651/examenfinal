@@ -1,4 +1,3 @@
-#MTEZ importamos las librerias necesarias
 import paho.mqtt.client as mqtt
 import threading
 import logging
@@ -6,26 +5,26 @@ import time
 import os 
 import socket
 import sys
-#MTEZ variables globales
-from globals import *    #MTEZvariables globales
+
+from globals import *    #variables globales
 from comandos import Comandos
-#MTEZ objeto tipo Comandos
+
 com = Comandos()
-#MTEZ banderas indicadoras
+
 tag  = 'Cli'
 tag1 = 'Fr'
 lista = []
 
-#MTEZ Configuracion inicial de logging
+#Configuracion inicial de logging
 logging.basicConfig(
     level = logging.INFO, 
     format = '[%(levelname)s] (%(threadName)-10s) %(message)s'
     )
-#MTEZ constructor de la Clase, recibe credenciales de MQTTT, también se definen los parámetros de conexión del socket
+
 class Servidor():
    
    def __init__(self, MQTT_USER, MQTT_PASS, MQTT_HOST, MQTT_PORT ):
-        qos=2    #MTEZ estatus de calidad de servicio del mqtt
+        qos=2
         self.MQTT_USER = MQTT_USER
         self.MQTT_PASS = MQTT_PASS
         self.MQTT_HOST = MQTT_HOST
@@ -36,11 +35,11 @@ class Servidor():
         self.client.username_pw_set(self.MQTT_USER, self.MQTT_PASS)                  #Credenciales requeridas por el broker
         self.client.connect(host= self.MQTT_HOST, port = self.MQTT_PORT)   
         self.SERVER_ADDR = ""#socket.gethostbyname(socket.gethostname()) 
-        self.SERVER_PORT = 9816 #METZpuerto en el que escucha el servidor
-        self.BUFFER_SIZE = 8*1024 #MTEZtamaño del buffer
-        self.flag_tcp = False #MTEZ bandera de tcp inicializada en falso
+        self.SERVER_PORT = 9816
+        self.BUFFER_SIZE = 8*1024
+        self.flag_tcp = False
 
-   ##MTEZ algoritmo topics obtenidos por archivos de texto
+   #algoritmo topics obtenidos por archivos de texto
    def run_topics(self):               
         archivo = open(ROOMS_FILENAME,'r')
         self.grupo = archivo.readline(2)
@@ -64,16 +63,17 @@ class Servidor():
         archivo.close()
         self.client.loop_start()
         
-#MTEZ Callback que se ejecuta cuando nos conectamos al brokerr
+
+   #Callback que se ejecuta cuando nos conectamos al broker
    def on_connect(self,client, userdata, rc):
         logging.info("Conectado al broker")
 
-   #MTEZ Handler en caso se publique satisfactoriamente en el broker MQTT
+   #Handler en caso se publique satisfactoriamente en el broker MQTT
    def on_publish(self,client, userdata, mid): 
         publishText = "Publicacion satisfactoria"
         logging.info(publishText)
 
-    #MTEZ Callback que se ejecuta cuando llega un mensaje al topic suscrito, EN ÉSTE MÉTODO GENERAMOS LAS LISTAS DE CLIENTES ACTIVOS
+    #Callback que se ejecuta cuando llega un mensaje al topic suscrito
      
    def on_message(self,client, userdata, msg): 
         #logging.info("Ha llegado el mensaje al topic: " + str(msg.topic))
@@ -103,7 +103,7 @@ class Servidor():
 
         print(lista)
 
-        #MTEZ PARA VERIFICAR LOS CLIENTES CONECTADOS, además se gestionan los comandos de negociación
+        #algoritmo transferencia de audio
         if(((str(msg.payload))[0:6]+"'")==(str(com.command_ftr()))):
               self.client_envia    = str((str(msg.topic)))[12:(len(str(msg.payload)))] 
               self.destino         = (str(msg.payload))[6:15]
@@ -121,61 +121,62 @@ class Servidor():
                    self.client.publish(("comandos"+"/"+self.grupo+"/"+self.client_envia), a_dato1)
                    self.flag_tcp = False
 
-   def mens(self): #MTEZ USAMOS ESTE METODO PARA USAR EL RESULTADO DE LA BANDERA TCP
+   def mens(self):
         if(self.flag_tcp == True):
             self.recibir() 
 
-   #MTEZ recepcion de audio 
+   # recepcion de audio      
    def recibir(self):
         
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #MTEZ abrimos el soket tcp
-        sock.connect_ex((self.SERVER_ADDR, self.SERVER_PORT)) #MTEZ conectamos
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+        sock.connect_ex((self.SERVER_ADDR, self.SERVER_PORT))
         try:
-             print("tcp_recibiendo") 
-             buff = sock.recv(self.BUFFER_SIZE) #almacenamos en buffer
-             print("contiene el bufer:"+  str(buff)) 
-             file_to_open = os.path.expanduser('temporal.wav') #abrimos el archivo 
-             f = open(file_to_open, 'wb+') #MTEZ abrimos el archivo en modo escritura binario
+             print("tcp_recibiendo")
+             buff = sock.recv(self.BUFFER_SIZE)
+             print("stocontiene el bufer:"+  str(buff))
+             file_to_open = os.path.expanduser('temporal.wav')
+             f = open(file_to_open, 'wb+') #Aca se guarda el archivo entrante
 
-             while buff: #MTEZ en este ciclo empezamos a recibir y guardar en el buffer
-                f.write(buff) 
-                buff = sock.recv(self.BUFFER_SIZE) #MTEZ Los bloques se van agregando al archivo
-             f.close() #MTEZ Se cierra el archivo
+             while buff:
+                f.write(buff)
+                buff = sock.recv(self.BUFFER_SIZE) #Los bloques se van agregando al archivo
+             f.close() #Se cierra el archivo
              print("Recepcion de archivo finalizada")
              self.a_dato2 = com.command_frr() + bytes((str(self.destino)), 'utf-8')
              self.client.publish(("comandos"+"/"+self.grupo+"/"+str(self.destino)), self.a_dato2) 
-             time.sleep(1) #MTEZ ejecución de comandos para la negociacion
+             time.sleep(1)
              self.enviar()
         except KeyboardInterrupt:
          print('Desconectando del broker MQTT...')
          sock.close()
         finally:
-            ""
+        #algoritmo busqueda usuario entrega de audio codifo FRR
+         ""
              
-   def enviar(self): #MTEZ método para enviar archivos
-        self.filename = 'temporal.wav' 
-        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM) #MTEZ iniciamos el soket
+   def enviar(self):
+        self.filename = 'temporal.wav'
+        sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         sock.bind((self.SERVER_ADDR, self.SERVER_PORT))
-        sock.listen(5) #MTEZ 1 conexion activa y 9 en cola
+        sock.listen(5) #1 conexion activa y 9 en cola
         run = True
         try:
-            while run: #MTEZ se ejecuta la peticion de recepcion, "o se intenta" el envío
+            while run: 
                 print("\nEsperando conexion remota...\n")
                 conn, addr = sock.accept()
                 opcionMenu = input('\n\t presione el #3 -> ') 
                 if(opcionMenu == "3"):
                   run = False
-                with open(self.filename, 'rb') as f: #MTEZ Se abre el archivo a enviar en BINARIO 
-                    conn.sendfile(f, 0) #envio por el soket
-                f.close() #cerramos el archivo
-                run = False #MTEZ salimos del while
+                with open(self.filename, 'rb') as f: #Se abre el archivo a enviar en BINARIO
+                    conn.sendfile(f, 0)
+                f.close()
+                run = False
                 
         except KeyboardInterrupt:
-           print('Desconectando')
-           sock.close()   #desconectamos del soket
+           print('Desconectando del broker MQTT...')
+           sock.close()   
 
         finally:
-           sock.close() #desconectando del soket
+           sock.close()
        
 
   

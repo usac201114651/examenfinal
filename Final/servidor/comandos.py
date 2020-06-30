@@ -1,3 +1,4 @@
+#se intenta hacer la gestión de comandos através de las funciones
 import os 
 import sys
 
